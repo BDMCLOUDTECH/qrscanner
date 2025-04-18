@@ -379,7 +379,7 @@ const ScanDetail = ({navigation, route}) => {
                       textAlign: 'center',
                       marginBottom: 5,
                     }}>
-                    {companyDetail.event_name}
+                    {companyDetail.event_name.replace(' &amp;', '&')}
                   </Text>
                 </View>
                 <View

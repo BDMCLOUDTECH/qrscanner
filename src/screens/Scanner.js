@@ -20,7 +20,7 @@ const Scanner = ({navigation}) => {
 
   const fetchGetUrl = async url => {
     var responseClone; // 1
-    // console.log('the url received', url);
+    console.log('the url received', url);
     const data = {
       username: 'admin',
       password: 'admin',
@@ -37,11 +37,13 @@ const Scanner = ({navigation}) => {
       responseClone = response.clone();
       // console.log('responseClone', responseClone);
       const json = await response.json();
+      console.log('json response: ', json);
       if (response.status === 200) {
         if (json.data.general_pass == true) {
           if (
-            json.data.number_of_person_left == 0 &&
-            json.data.member_food_count_left == 0
+            json.data.number_of_person_left == 0
+
+            // &&  json.data.member_food_count_left == 0
             // && json.data.member_gift_count_left == 0
           ) {
             setCompanyDetail(null);
@@ -56,15 +58,21 @@ const Scanner = ({navigation}) => {
           }
         } else {
           if (
-            (json.data.number_of_person_left == 0 &&
-              json.data.member_food_count_left == 0 &&
-              // json.data.member_gift_count_left == 0 &&
-              json.data.refund_member_count == 0) ||
-            (json.data.number_of_person_left == 0 &&
-              json.data.member_food_count_left == 0 &&
-              // json.data.member_gift_count_left == 0 &&
-              json.data.refund_member_count == 1 &&
-              checkNoMember(json.data.person_name))
+            // (
+            json.data.number_of_person_left == 0 ||
+            // && json.data.member_food_count_left == 0)
+            //  &&
+            // json.data.member_gift_count_left == 0 &&
+            // json.data.refund_member_count == 0
+
+            // (
+            json.data.number_of_person_left == 0
+
+            // && json.data.member_food_count_left == 0)
+            // &&
+            // json.data.member_gift_count_left == 0 &&
+            // json.data.refund_member_count == 1 &&
+            // checkNoMember(json.data.person_name)
           ) {
             setCompanyDetail(null);
             setNextScreen(false);
@@ -73,11 +81,13 @@ const Scanner = ({navigation}) => {
               'The QR code you scanned is not valid for entry. It appears that the maximum person limit for this pass has been reached. Please make sure you have the correct pass and try again later.',
             );
           } else if (
-            json.data.number_of_person_left == 0 &&
-            json.data.member_food_count_left == 0 &&
+            json.data.number_of_person_left == 0
+            // && json.data.member_food_count_left == 0
+            // &&
             // json.data.member_gift_count_left == 0 &&
-            json.data.refund_member_count == 1 &&
-            json.data.pass_president
+            // json.data.refund_member_count == 1
+            // &&
+            // json.data.pass_president
           ) {
             Alert.alert(
               'QR Code Invalid',

@@ -121,9 +121,10 @@ export const mainPageStyles = StyleSheet.create({
     // borderColor: 'red',
   },
   eventItem: {
-    width: windowWidth * 0.43,
+    width: windowWidth * 0.74,
     borderRadius: 10,
-    padding: 15,
+    padding: 10,
+    height: windowWidth * 0.34,
   },
   eventFullWidth: {
     width: windowWidth * 0.8,

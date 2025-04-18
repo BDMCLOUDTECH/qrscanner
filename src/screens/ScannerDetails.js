@@ -116,7 +116,7 @@ const ScannerDetails = ({navigation, route}) => {
 
       if (response.status === 200) {
         const json = await response.json();
-
+        console.log('the response received is', json);
         navigation.goBack();
       } else if (response.status === 400) {
         const errorJson = await response.json();
@@ -378,7 +378,7 @@ const ScannerDetails = ({navigation, route}) => {
                       textAlign: 'center',
                       marginBottom: 5,
                     }}>
-                    {companyDetail.event_name}
+                    {companyDetail.event_name.replace(' &amp;', ' &')}
                   </Text>
                 </View>
                 <View
@@ -413,49 +413,6 @@ const ScannerDetails = ({navigation, route}) => {
               </View>
               <View style={mainPageStyles.eventContainer}>
                 <View style={mainPageStyles.eventTopContainer}>
-                  <TouchableOpacity
-                    style={[
-                      mainPageStyles.eventItem,
-                      // mainPageStyles.eventFullWidth,
-                      {
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#f7b731',
-                        opacity: noOfFoodLeft <= 0 ? 0.6 : 1,
-                      },
-                    ]}
-                    disabled={noOfFoodLeft <= 0}
-                    // disabled={true}
-                    onPress={() => {
-                      showAlert();
-                      setType('food');
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 35,
-                        color: '#ffffff',
-                        fontFamily: 'Montserrat-Bold',
-                      }}>
-                      {noOfFoodLeft}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: '#ffffff',
-                        fontFamily: 'Montserrat-Bold',
-                      }}>
-                      Food
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: '#ffffff',
-                        marginTop: 5,
-                        fontFamily: 'Lato-Bold',
-                      }}>
-                      Coupon Remaining
-                    </Text>
-                  </TouchableOpacity>
                   <TouchableOpacity
                     style={[
                       mainPageStyles.eventItem,
@@ -498,6 +455,50 @@ const ScannerDetails = ({navigation, route}) => {
                       Coupon Remaining
                     </Text>
                   </TouchableOpacity>
+                  {/* food button  */}
+                  {/* <TouchableOpacity
+                    style={[
+                      mainPageStyles.eventItem,
+                      // mainPageStyles.eventFullWidth,
+                      {
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#f7b731',
+                        opacity: noOfFoodLeft <= 0 ? 0.6 : 1,
+                      },
+                    ]}
+                    disabled={noOfFoodLeft <= 0}
+                    // disabled={true}
+                    onPress={() => {
+                      showAlert();
+                      setType('food');
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 35,
+                        color: '#ffffff',
+                        fontFamily: 'Montserrat-Bold',
+                      }}>
+                      {noOfFoodLeft}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: '#ffffff',
+                        fontFamily: 'Montserrat-Bold',
+                      }}>
+                      Food
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: '#ffffff',
+                        marginTop: 5,
+                        fontFamily: 'Lato-Bold',
+                      }}>
+                      Coupon Remaining
+                    </Text>
+                  </TouchableOpacity> */}
 
                   {/* gift button  */}
                   {/* <TouchableOpacity
@@ -588,7 +589,9 @@ const ScannerDetails = ({navigation, route}) => {
                 {/* <EventItem /> */}
               </View>
 
-              {isRefundable == 1 && !general_pass && (
+              {/* refund section start  */}
+
+              {/* {isRefundable == 1 && !general_pass && (
                 <View>
                   {!isPassPresident && (
                     <TouchableHighlight
@@ -631,8 +634,9 @@ const ScannerDetails = ({navigation, route}) => {
                     </TouchableHighlight>
                   )}
                 </View>
-              )}
-              <Toast />
+              )} */}
+              {/* <Toast /> */}
+              {/* refund section end */}
             </View>
           )}
 
