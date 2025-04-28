@@ -13,17 +13,19 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {RNCamera} from 'react-native-camera';
 import Otpverify from '../Components/Otpverify';
 
-const Scanner = ({navigation}) => {
+const CardScanner = ({navigation}) => {
   const [flashMode, setFlashMode] = useState(RNCamera.Constants.FlashMode.off);
   const [nextScreen, setNextScreen] = useState(false);
   const [companyDetail, setCompanyDetail] = useState(null); // Initialize with null
 
-  const fetchGetUrl = async url => {
+  const fetchGetUrl = async (url, companyId) => {
     var responseClone; // 1
     console.log('the url received', url);
     const data = {
       username: 'admin',
       password: 'admin',
+      member_ship_encrypt_code: 'b0UY',
+      // member_ship_encrypt_code: companyId,
     };
     try {
       const response = await fetch(url, {
@@ -34,10 +36,17 @@ const Scanner = ({navigation}) => {
         body: JSON.stringify(data),
       });
       // console.log('response received is', response);
+
       responseClone = response.clone();
       // console.log('responseClone', responseClone);
       const json = await response.json();
       console.log('json response: ', json);
+      if (json) {
+        navigation.navigate('CardDetails', {
+          data: json,
+        });
+      }
+      return;
       if (response.status === 200) {
         if (json.data.general_pass == true) {
           if (
@@ -159,8 +168,13 @@ const Scanner = ({navigation}) => {
     setNextScreen(true);
 
     try {
-      console.log('the fetch url is', e.data);
-      await fetchGetUrl(e.data);
+      console.log('the fetch url using the card url', e.data);
+      // https://emacares.emamumbai.com/view_data/aEQbQQ==
+      const data = e.data.split('/');
+      console.log('data: ', data);
+      let fetchEventDataUrl =
+        'https://emamumbai.com/api_new/AppController/get_scanner_data';
+      await fetchGetUrl(fetchEventDataUrl, data[data.length - 1]);
     } catch (error) {
       console.error('An error occurred', error);
       Alert.alert('Error', 'Failed to fetch company data');
@@ -273,4 +287,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Scanner;
+export default CardScanner;
