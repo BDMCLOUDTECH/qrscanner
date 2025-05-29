@@ -1,31 +1,27 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
+  ActivityIndicator,
+  Alert,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Linking,
-  Alert,
-  ActivityIndicator,
 } from 'react-native';
+import {RNCamera} from 'react-native-camera';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {RNCamera} from 'react-native-camera';
-import Otpverify from '../Components/Otpverify';
 
 const CardScanner = ({navigation}) => {
   const [flashMode, setFlashMode] = useState(RNCamera.Constants.FlashMode.off);
   const [nextScreen, setNextScreen] = useState(false);
-  const [companyDetail, setCompanyDetail] = useState(null); // Initialize with null
-
   const fetchGetUrl = async (url, companyId) => {
     var responseClone; // 1
     console.log('the url received', url);
     const data = {
       username: 'admin',
       password: 'admin',
-      member_ship_encrypt_code: 'b0UY',
-      // member_ship_encrypt_code: companyId,
+      // member_ship_encrypt_code: 'b0UY',
+      member_ship_encrypt_code: companyId,
     };
     try {
       const response = await fetch(url, {
@@ -41,87 +37,20 @@ const CardScanner = ({navigation}) => {
       // console.log('responseClone', responseClone);
       const json = await response.json();
       console.log('json response: ', json);
-      if (json) {
-        navigation.navigate('CardDetails', {
-          data: json,
-        });
-      }
-      return;
+
+      // return;
       if (response.status === 200) {
-        if (json.data.general_pass == true) {
-          if (
-            json.data.number_of_person_left == 0
-
-            // &&  json.data.member_food_count_left == 0
-            // && json.data.member_gift_count_left == 0
-          ) {
-            setCompanyDetail(null);
-            setNextScreen(false);
-            Alert.alert(
-              'Invalid General Pass QR',
-              'The QR code you scanned is not valid for entry.',
-            );
-            navigation.navigate('LaunchScreen');
-          } else {
-            setNextScreen(false);
-            setCompanyDetail(json);
-          }
-        } else {
-          if (
-            // (
-            json.data.number_of_person_left == 0 ||
-            // && json.data.member_food_count_left == 0)
-            //  &&
-            // json.data.member_gift_count_left == 0 &&
-            // json.data.refund_member_count == 0
-
-            // (
-            json.data.number_of_person_left == 0
-
-            // && json.data.member_food_count_left == 0)
-            // &&
-            // json.data.member_gift_count_left == 0 &&
-            // json.data.refund_member_count == 1 &&
-            // checkNoMember(json.data.person_name)
-          ) {
-            setCompanyDetail(null);
-            setNextScreen(false);
-            Alert.alert(
-              'QR Code Invalid',
-              'The QR code you scanned is not valid for entry. It appears that the maximum person limit for this pass has been reached. Please make sure you have the correct pass and try again later.',
-            );
-            navigation.navigate('LaunchScreen');
-          } else if (
-            json.data.number_of_person_left == 0
-            // && json.data.member_food_count_left == 0
-            // &&
-            // json.data.member_gift_count_left == 0 &&
-            // json.data.refund_member_count == 1
-            // &&
-            // json.data.pass_president
-          ) {
-            Alert.alert(
-              'QR Code Invalid',
-              'The QR code you scanned is not valid for entry. It appears that the maximum person limit for this pass has been reached. Please make sure you have the correct pass and try again later.',
-            );
-
-            setNextScreen(false);
-            navigation.navigate('LaunchScreen');
-            return;
-          } else {
-            setNextScreen(false);
-            setCompanyDetail(json);
-          }
+        if (json) {
+          navigation.navigate('CardDetails', {
+            data: json,
+          });
+          setNextScreen(false);
         }
-      } else if (response.status === 400) {
-        // Person count is already at 0
-        setNextScreen(false);
+      } else if (response.status === 404) {
         const errorJson = await response.json();
         Alert.alert('Error', errorJson.message);
         navigation.navigate('LaunchScreen');
       } else {
-        // Handle other HTTP error statuses here
-        setNextScreen(false);
         Alert.alert(
           'Invalid QR',
           'The QR code you scanned is not valid for entry. Please recheck before scan.',
@@ -136,39 +65,15 @@ const CardScanner = ({navigation}) => {
         'Kindly avoid scanning QR codes that are not associated with the company. Please! Try to Scan Only Company QR.',
       );
       navigation.navigate('LaunchScreen');
-
-      // console.error('Catch Outside Error:', error);
     }
   };
-
-  // const fetchGetUrl = async url => {
-  //   try {
-  //     const res = await fetch(url);
-  //     if (!res.ok) {
-  //       throw new Error(`HTTP error! Status: ${res.status}`);
-  //     }
-  //     const data = await res.json();
-
-  //     if (data[0].personLeft == 0) {
-  //       Alert.alert(
-  //         'QR Code Invalid',
-  //         'The QR code you scanned is not valid for entry. It appears that the maximum person limit for this pass has been reached. Please make sure you have the correct pass and try again later.',
-  //       );
-  //       setCompanyDetail(null);
-  //     } else {
-  //       setCompanyDetail(data);
-  //     }
-  //   } catch (error) {p
-  //     console.error('An error occurred during fetch:', error);
-  //     Alert.alert('Error', 'Failed to fetch company data');
-  //   }
-  // };
 
   const onSuccess = async e => {
     setNextScreen(true);
 
     try {
       console.log('the fetch url using the card url', e.data);
+      //sample url
       // https://emacares.emamumbai.com/view_data/aEQbQQ==
       const data = e.data.split('/');
       console.log('data: ', data);
@@ -176,21 +81,13 @@ const CardScanner = ({navigation}) => {
         'https://emamumbai.com/api_new/AppController/get_scanner_data';
       await fetchGetUrl(fetchEventDataUrl, data[data.length - 1]);
     } catch (error) {
+      console.log('error occured on scanning card is', error);
       console.error('An error occurred', error);
       Alert.alert('Error', 'Failed to fetch company data');
+      setNextScreen(false);
       navigation.navigate('LaunchScreen');
     }
   };
-
-  useEffect(() => {
-    // Check if companyDetail is set and has changed
-    console.log('Company Detail =>>', companyDetail);
-    if (companyDetail !== null && companyDetail !== undefined) {
-      navigation.navigate('ScanDetail', {
-        companyData: companyDetail,
-      });
-    }
-  }, [companyDetail]);
 
   const toggleFlash = () => {
     setFlashMode(prevFlashMode =>
@@ -199,22 +96,7 @@ const CardScanner = ({navigation}) => {
         : RNCamera.Constants.FlashMode.torch,
     );
   };
-  const checkNoMember = personString => {
-    // Check if 'personString' exists
-    if (personString) {
-      // Normalize the string: trim spaces and convert to lowercase
-      const normalizedPersonName = personString.toLowerCase().trim();
 
-      // Check for 'no member' or 'no main member'
-      if (
-        normalizedPersonName.includes('no member') ||
-        normalizedPersonName.includes('no main member')
-      ) {
-        return true;
-      }
-    }
-    return false;
-  };
   return (
     <>
       {nextScreen ? (

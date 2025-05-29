@@ -50,8 +50,8 @@ const LaunchScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   launchContainer: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: 'red',
+    // borderWidth: 1,
+    // borderColor: 'red',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
